@@ -1,4 +1,5 @@
 
+
 #pragma once
 
 namespace Practice {
@@ -7,8 +8,11 @@ namespace Practice {
 	using namespace System::ComponentModel;
 	using namespace System::Collections;
 	using namespace System::Windows::Forms;
+	using namespace System::Collections::Generic;
 	using namespace System::Data;
 	using namespace System::Drawing;
+	using namespace System::IO;
+
 
 	/// <summary>
 	/// Сводка для AddAndEdit
@@ -33,6 +37,9 @@ namespace Practice {
 				delete components;
 			}
 		}
+
+	private: bool fileUploaded = false;
+
 	private: System::Windows::Forms::Form^ parentForm;
 	private: System::Windows::Forms::Label^ label1;
 
@@ -47,6 +54,10 @@ namespace Practice {
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Profession;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ education;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ dismissal_reason;
+	private: System::Windows::Forms::Button^ save_btn;
+	private: System::Windows::Forms::Button^ delete_btn;
+	private: System::Windows::Forms::Button^ open_btn;
+
 
 	protected:
 
@@ -74,6 +85,9 @@ namespace Practice {
 			this->Profession = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->education = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->dismissal_reason = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->save_btn = (gcnew System::Windows::Forms::Button());
+			this->delete_btn = (gcnew System::Windows::Forms::Button());
+			this->open_btn = (gcnew System::Windows::Forms::Button());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->BeginInit();
 			this->SuspendLayout();
 			// 
@@ -104,10 +118,10 @@ namespace Practice {
 				this->FIO, this->Sex,
 					this->Age, this->adress, this->Profession, this->education, this->dismissal_reason
 			});
-			this->dataGridView1->Location = System::Drawing::Point(12, 132);
+			this->dataGridView1->Location = System::Drawing::Point(33, 133);
 			this->dataGridView1->Name = L"dataGridView1";
 			this->dataGridView1->RowHeadersWidth = 45;
-			this->dataGridView1->Size = System::Drawing::Size(858, 150);
+			this->dataGridView1->Size = System::Drawing::Size(817, 150);
 			this->dataGridView1->TabIndex = 5;
 			this->dataGridView1->CellContentClick += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &AddAndEdit::dataGridView1_CellContentClick);
 			// 
@@ -160,11 +174,42 @@ namespace Practice {
 			this->dismissal_reason->Name = L"dismissal_reason";
 			this->dismissal_reason->Width = 110;
 			// 
+			// save_btn
+			// 
+			this->save_btn->Location = System::Drawing::Point(795, 308);
+			this->save_btn->Name = L"save_btn";
+			this->save_btn->Size = System::Drawing::Size(75, 23);
+			this->save_btn->TabIndex = 6;
+			this->save_btn->Text = L"Сохранить";
+			this->save_btn->UseVisualStyleBackColor = true;
+			// 
+			// delete_btn
+			// 
+			this->delete_btn->Location = System::Drawing::Point(17, 308);
+			this->delete_btn->Name = L"delete_btn";
+			this->delete_btn->Size = System::Drawing::Size(130, 23);
+			this->delete_btn->TabIndex = 7;
+			this->delete_btn->Text = L"Удалить строку";
+			this->delete_btn->UseVisualStyleBackColor = true;
+			// 
+			// open_btn
+			// 
+			this->open_btn->Location = System::Drawing::Point(771, 24);
+			this->open_btn->Name = L"open_btn";
+			this->open_btn->Size = System::Drawing::Size(99, 23);
+			this->open_btn->TabIndex = 8;
+			this->open_btn->Text = L"Открыть БД";
+			this->open_btn->UseVisualStyleBackColor = true;
+			this->open_btn->Click += gcnew System::EventHandler(this, &AddAndEdit::open_btn_Click);
+			// 
 			// AddAndEdit
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(882, 548);
+			this->Controls->Add(this->open_btn);
+			this->Controls->Add(this->delete_btn);
+			this->Controls->Add(this->save_btn);
 			this->Controls->Add(this->dataGridView1);
 			this->Controls->Add(this->back_btn);
 			this->Controls->Add(this->label1);
@@ -186,6 +231,39 @@ private: System::Void back_btn_Click(System::Object^ sender, System::EventArgs^ 
 	this->Hide();
 }
 private: System::Void dataGridView1_CellContentClick(System::Object^ sender, System::Windows::Forms::DataGridViewCellEventArgs^ e) {
+}
+private: System::Void open_btn_Click(System::Object^ sender, System::EventArgs^ e) {
+	OpenFileDialog^ openFileDialog1 = gcnew OpenFileDialog;
+	openFileDialog1->FileName = "db.csv";
+	openFileDialog1->Filter = "CSV files (*.csv)|*.csv";
+
+
+	if (openFileDialog1->ShowDialog() == System::Windows::Forms::DialogResult::OK) {
+		try {
+			StreamReader^ file = gcnew StreamReader(openFileDialog1->FileName);
+			String^ line;
+
+			line = file->ReadLine();
+			if (line != nullptr) {
+				array<String^>^ cells = line->Split(';');
+
+				dataGridView1->Rows->Add(cells);
+
+				while ((line = file->ReadLine()) != nullptr)
+				{
+					cells = line->Split(';'); 
+					dataGridView1->Rows->Add(cells); 
+				}
+			}
+			fileUploaded = true;
+			MessageBox::Show("Данные загружены", "Готово");
+			file->Close();
+		}
+		catch (Exception^ ex)
+		{
+			MessageBox::Show("Непредвиденная ошибка: " + ex->Message, "Ошибка");
+		}
+	}
 }
 };
 }
