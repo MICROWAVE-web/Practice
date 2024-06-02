@@ -121,13 +121,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Interface.cpp" />
-    <ClCompile Include="Request.cpp" />
+    <ClCompile Include="Password.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AddAndEdit.h">
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="Interface.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
+    <ClInclude Include="Password.h">
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="Request.h">
@@ -140,6 +143,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Interface.resx">
       <DependentUpon>Interface.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Password.resx">
+      <DependentUpon>Password.h</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Request.resx">
       <DependentUpon>Request.h</DependentUpon>

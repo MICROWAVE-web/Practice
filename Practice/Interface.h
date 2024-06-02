@@ -1,5 +1,6 @@
 #include "AddAndEdit.h"
 #include "Request.h"
+#include "Password.h"
 #pragma once
 
 namespace Practice {
@@ -120,8 +121,8 @@ private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e
 private: System::Void button3_Click(System::Object^ sender, System::EventArgs^ e) {
 }
 private: System::Void add_edit_btn_Click(System::Object^ sender, System::EventArgs^ e) {
-	AddAndEdit^ show_form = gcnew AddAndEdit(this);
-	show_form->Show();
+	Password^ Password_form = gcnew Password(this);
+	Password_form->Show();
 	this->Hide();
 }
 
